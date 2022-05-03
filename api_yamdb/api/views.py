@@ -1,6 +1,6 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-from django.db.models import Avg, F
+# from django.db.models import Avg, F
 
 from rest_framework.decorators import api_view, action
 from rest_framework.filters import SearchFilter
