@@ -20,7 +20,7 @@ from api.serializers import (SignUpSerializer, TokenSerializer,
                              UserSerializer, ProfileSerializer,
                              CategorySerializer, GenreSerializer,
                              TitleReadSerializer, TitleWriteSerializer)
-from api.permissions import IsAdmin
+from api.permissions import IsAdmin, IsAdminOrReadOnly
 from reviews.models import User, Category, Genre, Title
 
 from api.custom_viewset_class import CreateListViewset
@@ -94,7 +94,7 @@ class UserViewSet(ModelViewSet):
 class CategoryViewSet(CreateListViewset):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsAdmin)
+    permission_classes = (IsAdminOrReadOnly, )
     filter_backends = [SearchFilter]
     lookup_field = 'slug'
     search_fields = ('=name',)
@@ -103,7 +103,7 @@ class CategoryViewSet(CreateListViewset):
 class GenreViewSet(CreateListViewset):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (IsAdmin)
+    permission_classes = (IsAdminOrReadOnly, )
     filter_backends = [SearchFilter]
     lookup_field = 'slug'
     search_fields = ('=name',)
@@ -113,7 +113,7 @@ class TitleViewSet(ModelViewSet):
     queryset = Title.objects.annotate()
     # rating=Avg(F('reviews__score'))
 
-    permission_classes = (IsAdmin)
+    permission_classes = (IsAdminOrReadOnly, )
     filterset_class = TitleFilter
 
     def get_serializer_class(self):

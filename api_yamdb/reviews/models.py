@@ -1,11 +1,5 @@
-from datetime import datetime
-
-from operator import mod
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
-from django.core.validators import MaxValueValidator, MinValueValidator
-
 
 
 ROLE_CHOICES = (
@@ -51,45 +45,71 @@ class User(AbstractUser):
     def is_admin(self):
         return self.role == 'admin'
 
+
 class Category (models.Model):
-    name = models.TextField(
-        verbose_name='название категории'
-    )
+    name = models.CharField(
+        max_length=256,
+        verbose_name='название категории')    
     slug = models.SlugField(
         unique=True,
-        null=True,
-        verbose_name='слаг категории'
-    )
+        verbose_name='слаг категории')
+    
+    class Meta:
+        verbose_name = 'категория'
+        verbose_name_plural = 'категории'
+
+    def __str__(self):
+        return self.name
+    
 
 class Genre(models.Model):
-    name = models.TextField(
-        verbose_name='название жанра'
-    )
+    name = models.CharField(
+        max_length=256,
+        verbose_name='название жанра')
     slug = models.SlugField(
+        max_length=50,
         unique=True,
-        null=True,
-        verbose_name='слаг жанра'
-    )
+        verbose_name='slug')
+
+    class Meta:
+        verbose_name = 'жанр'
+        verbose_name_plural = 'жанры'
+
+    def __str__(self):
+        return self.name
+
 
 class Title(models.Model):
-    name = models.TextField(
-        verbose_name='названиие произведения'
-    )
-    year = models.IntegerField(
+    name = models.CharField(
+        max_length=128,
+        verbose_name='название')
+    year = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
         verbose_name='год выпуска',
-        null=True
     )
     description = models.TextField(
-        verbose_name='Описание')
+        blank=True,
+        verbose_name='описание'
+    )
     genre = models.ManyToManyField(
         Genre,
         related_name='titles',
-        verbose_name='жанр произведения'
+        blank=True,
+        verbose_name='жанр'
     )
     category = models.ForeignKey(
         Category,
-        null=True,
         on_delete=models.SET_NULL,
         related_name='titles',
-        verbose_name='категория произведения'
+        blank=True,
+        null=True,
+        verbose_name='категория'
     )
+
+    class Meta:
+        verbose_name = 'произведение'
+        verbose_name_plural = 'произведения'
+
+    def __str__(self):
+        return self.name

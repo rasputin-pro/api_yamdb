@@ -47,18 +47,20 @@ class TokenSerializer(Serializer):
     class Meta:
         model = User
         fields = ('username', 'confirmation_code')
-        
-        
+
+
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = ('name', 'slug',)
 
+
 class GenreSerializer(ModelSerializer):
     class Meta:
         model = Genre
         fields = ('name', 'slug',)
-        
+
+
 class TitleReadSerializer(ModelSerializer):
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(read_only=True, many=True)
