@@ -9,7 +9,7 @@ ROLE_CHOICES = (
 )
 
 
-class User(AbstractUser):
+class User(AbstractUser):  # TODO! max_length
     email = models.EmailField(
         unique=True,
         verbose_name='email'
@@ -55,6 +55,7 @@ class Category (models.Model):
         verbose_name='слаг категории')
     
     class Meta:
+        ordering = ('name', )
         verbose_name = 'категория'
         verbose_name_plural = 'категории'
 
@@ -72,6 +73,7 @@ class Genre(models.Model):
         verbose_name='slug')
 
     class Meta:
+        ordering = ('name', )
         verbose_name = 'жанр'
         verbose_name_plural = 'жанры'
 
@@ -83,7 +85,7 @@ class Title(models.Model):
     name = models.CharField(
         max_length=128,
         verbose_name='название')
-    year = models.PositiveSmallIntegerField(
+    year = models.PositiveSmallIntegerField(  # TODO?
         blank=True,
         null=True,
         verbose_name='год выпуска',
@@ -108,6 +110,7 @@ class Title(models.Model):
     )
 
     class Meta:
+        ordering = ('name', )
         verbose_name = 'произведение'
         verbose_name_plural = 'произведения'
 
