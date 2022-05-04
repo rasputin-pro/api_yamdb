@@ -5,24 +5,20 @@ from django.core.mail import send_mail
 from rest_framework.decorators import api_view, action
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
-from rest_framework.pagination import LimitOffsetPagination, \
-    PageNumberPagination
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly, AllowAny)
 from rest_framework.response import Response
-from rest_framework.viewsets import (GenericViewSet, ModelViewSet,
-                                     ReadOnlyModelViewSet)
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework_simplejwt.tokens import RefreshToken
-
 
 from api.serializers import (SignUpSerializer, TokenSerializer,
                              UserSerializer, ProfileSerializer,
                              CategorySerializer, GenreSerializer,
                              TitleReadSerializer, TitleWriteSerializer)
-from api.permissions import IsAdmin, IsAdminOrReadOnly
+from api.permissions import IsAdmin, ReadOnly
 from reviews.models import User, Category, Genre, Title
-
 from api.custom_viewset_class import CreateListViewset
 from api.filters import TitleFilter
 
@@ -94,27 +90,30 @@ class UserViewSet(ModelViewSet):
 class CategoryViewSet(CreateListViewset):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = (IsAdmin | ReadOnly, )
     filter_backends = [SearchFilter]
     lookup_field = 'slug'
-    search_fields = ('=name',)
+    search_fields = ('=name', )
+    ordering = ('name', )
 
 
 class GenreViewSet(CreateListViewset):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = (IsAdmin | ReadOnly, )
     filter_backends = [SearchFilter]
     lookup_field = 'slug'
-    search_fields = ('=name',)
+    search_fields = ('=name', )
+    ordering = ('name', )
 
 
 class TitleViewSet(ModelViewSet):
     queryset = Title.objects.annotate()
     # rating=Avg(F('reviews__score'))
 
-    permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = (IsAdmin | ReadOnly, )
     filterset_class = TitleFilter
+    ordering = ('name', )
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):

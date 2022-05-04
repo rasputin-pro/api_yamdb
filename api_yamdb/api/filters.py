@@ -12,9 +12,10 @@ class TitleFilter(django_filters.FilterSet):
     )
     name = django_filters.CharFilter(
         field_name='name',
+        lookup_expr='contains'
     )
-    year = django_filters.DateFilter(
-        field_name='year',
+    year = django_filters.NumberFilter(
+        field_name='year'
     )
 
     class Meta:
