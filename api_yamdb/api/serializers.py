@@ -1,9 +1,9 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 from rest_framework.relations import SlugRelatedField, StringRelatedField
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.serializers import ModelSerializer, Serializer, IntegerField
 
-from reviews.models import User
+from reviews.models import User, Category, Genre, Title
 
 
 class SignUpSerializer(ModelSerializer):
@@ -47,3 +47,42 @@ class TokenSerializer(Serializer):
     class Meta:
         model = User
         fields = ('username', 'confirmation_code')
+
+
+class CategorySerializer(ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('name', 'slug',)
+
+
+class GenreSerializer(ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = ('name', 'slug',)
+
+
+class TitleReadSerializer(ModelSerializer):
+    category = CategorySerializer(read_only=True)
+    genre = GenreSerializer(read_only=True, many=True)
+    rating = IntegerField(read_only=True)
+
+    class Meta:
+        fields = (
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
+        )
+        model = Title
+
+
+class TitleWriteSerializer(ModelSerializer):
+    category = SlugRelatedField(
+        queryset=Category.objects.all(), slug_field='slug'
+    )
+    genre = SlugRelatedField(
+        queryset=Genre.objects.all(), slug_field='slug', many=True
+    )
+
+    class Meta:
+        fields = (
+            'id', 'name', 'year', 'description', 'genre', 'category'
+        )
+        model = Title
