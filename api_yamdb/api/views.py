@@ -1,26 +1,24 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-# from django.db.models import Avg, F
-
+# from django.db.models import Avg, F  # TODO!
 from rest_framework.decorators import api_view, action
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly, AllowAny)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.viewsets import ModelViewSet
 
-from api.serializers import (SignUpSerializer, TokenSerializer,
-                             UserSerializer, ProfileSerializer,
-                             CategorySerializer, GenreSerializer,
-                             TitleReadSerializer, TitleWriteSerializer)
-from api.permissions import IsAdmin, ReadOnly
-from reviews.models import User, Category, Genre, Title
-from api.custom_viewset_class import CreateListViewset
 from api.filters import TitleFilter
+from api.permissions import IsAdmin, ReadOnly
+from api.serializers import (CategorySerializer, GenreSerializer,
+                             ProfileSerializer, SignUpSerializer,
+                             TitleReadSerializer, TitleWriteSerializer,
+                             TokenSerializer, UserSerializer)
+from api.viewsets import CreateListViewset
+from reviews.models import Category, Genre, Title, User
 
 
 @api_view(['POST'])
@@ -40,7 +38,8 @@ def send_confirmation_code(user):
     """Sending confirmation code to user email."""
     confirmation_code = default_token_generator.make_token(user)
     subject = 'Код подтверждения'
-    message = f'confirmation_code: {confirmation_code}'
+    message = (f'username: {user.username}'
+               f'confirmation_code: {confirmation_code}')
     return send_mail(subject, message, None, (user.email, ))
 
 
@@ -91,7 +90,7 @@ class CategoryViewSet(CreateListViewset):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (IsAdmin | ReadOnly, )
-    filter_backends = [SearchFilter]
+    filter_backends = (SearchFilter, )
     lookup_field = 'slug'
     search_fields = ('=name', )
     ordering = ('name', )
@@ -101,7 +100,7 @@ class GenreViewSet(CreateListViewset):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdmin | ReadOnly, )
-    filter_backends = [SearchFilter]
+    filter_backends = (SearchFilter, )
     lookup_field = 'slug'
     search_fields = ('=name', )
     ordering = ('name', )
@@ -109,8 +108,7 @@ class GenreViewSet(CreateListViewset):
 
 class TitleViewSet(ModelViewSet):
     queryset = Title.objects.annotate()
-    # rating=Avg(F('reviews__score'))
-
+    # rating=Avg(F('reviews__score'))  # TODO!
     permission_classes = (IsAdmin | ReadOnly, )
     filterset_class = TitleFilter
     ordering = ('name', )

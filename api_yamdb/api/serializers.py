@@ -1,9 +1,11 @@
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 from rest_framework.relations import SlugRelatedField, StringRelatedField
-from rest_framework.serializers import ModelSerializer, Serializer, IntegerField
+from rest_framework.serializers import (IntegerField, ModelSerializer,
+                                        Serializer)
 
-from reviews.models import User, Category, Genre, Title
+from reviews.models import Category, Genre, Title, User
 
 
 class SignUpSerializer(ModelSerializer):
@@ -30,14 +32,8 @@ class UserSerializer(SignUpSerializer):
         )
 
 
-class ProfileSerializer(SignUpSerializer):
+class ProfileSerializer(UserSerializer):
     role = StringRelatedField(read_only=True)
-
-    class Meta:
-        model = User
-        fields = (
-            'username', 'email', 'first_name', 'last_name', 'bio', 'role',
-        )
 
 
 class TokenSerializer(Serializer):
@@ -86,3 +82,10 @@ class TitleWriteSerializer(ModelSerializer):
             'id', 'name', 'year', 'description', 'genre', 'category'
         )
         model = Title
+
+    @staticmethod
+    def validate_year(value):
+        current_year = timezone.now().year
+        if value > current_year:
+            raise ValidationError('Год выпуска не может быть больше текущего.')
+        return value

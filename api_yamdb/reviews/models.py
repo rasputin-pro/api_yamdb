@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator
 from django.db import models
-
+from django.utils import timezone
 
 ROLE_CHOICES = (
     ('user', 'Пользователь'),
@@ -11,6 +12,7 @@ ROLE_CHOICES = (
 
 class User(AbstractUser):  # TODO! max_length
     email = models.EmailField(
+        max_length=254,
         unique=True,
         verbose_name='email'
     )
@@ -19,7 +21,7 @@ class User(AbstractUser):  # TODO! max_length
         verbose_name='Биография'
     )
     role = models.CharField(
-        max_length=255,
+        max_length=150,
         choices=ROLE_CHOICES,
         default='user',
         verbose_name='Роль пользователя'
@@ -51,9 +53,10 @@ class Category (models.Model):
         max_length=256,
         verbose_name='название категории')    
     slug = models.SlugField(
+        max_length=50,
         unique=True,
         verbose_name='слаг категории')
-    
+
     class Meta:
         ordering = ('name', )
         verbose_name = 'категория'
@@ -85,9 +88,8 @@ class Title(models.Model):
     name = models.CharField(
         max_length=128,
         verbose_name='название')
-    year = models.PositiveSmallIntegerField(  # TODO?
-        blank=True,
-        null=True,
+    year = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(timezone.now().year)],
         verbose_name='год выпуска',
     )
     description = models.TextField(
