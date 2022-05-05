@@ -1,20 +1,20 @@
-import django_filters
+from django_filters import CharFilter, FilterSet, NumberFilter
 
 from reviews.models import Title
 
 
-class TitleFilter(django_filters.FilterSet):
-    category = django_filters.CharFilter(
+class TitleFilter(FilterSet):
+    category = CharFilter(
         field_name='category__slug'
     )
-    genre = django_filters.CharFilter(
+    genre = CharFilter(
         field_name='genre__slug'
     )
-    name = django_filters.CharFilter(
+    name = CharFilter(
         field_name='name',
         lookup_expr='contains'
     )
-    year = django_filters.NumberFilter(
+    year = NumberFilter(
         field_name='year'
     )
 
