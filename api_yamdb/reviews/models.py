@@ -11,7 +11,7 @@ ROLE_CHOICES = (
 )
 
 
-class User(AbstractUser):  # TODO! max_length
+class User(AbstractUser):
     email = models.EmailField(
         max_length=254,
         unique=True,
@@ -99,14 +99,15 @@ class Title(models.Model):
     )
     genre = models.ManyToManyField(
         Genre,
-        related_name='titles',
+        through='GenreTitle',
+        related_name='genre',
         blank=True,
         verbose_name='жанр'
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
-        related_name='titles',
+        related_name='category',
         blank=True,
         null=True,
         verbose_name='категория'
@@ -121,6 +122,20 @@ class Title(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class GenreTitle(models.Model):
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.CASCADE
+    )
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return f'{self.title} {self.genre}'
 
 
 class Review(models.Model):
