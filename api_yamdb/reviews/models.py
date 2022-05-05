@@ -52,7 +52,7 @@ class User(AbstractUser):
 class Category (models.Model):
     name = models.CharField(
         max_length=256,
-        verbose_name='название категории')    
+        verbose_name='название категории')
     slug = models.SlugField(
         max_length=50,
         unique=True,
@@ -65,7 +65,7 @@ class Category (models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Genre(models.Model):
     name = models.CharField(

@@ -85,7 +85,7 @@ class TitleWriteSerializer(ModelSerializer):
             'id', 'name', 'year', 'description', 'genre', 'category'
         )
         model = Title
-    
+
     @staticmethod
     def validate_year(value):
         current_year = timezone.now().year
