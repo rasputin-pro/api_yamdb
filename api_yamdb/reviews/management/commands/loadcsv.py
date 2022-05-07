@@ -1,11 +1,11 @@
 from django.core.management.base import BaseCommand
 from django.shortcuts import get_object_or_404
+import csv
+
+from colorama import init, Fore
 
 from reviews.models import (Category, Comment, Genre, GenreTitle, Review,
                             Title, User, )
-
-import csv
-from colorama import init, Fore
 
 
 init(autoreset=True)
