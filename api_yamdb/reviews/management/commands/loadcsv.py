@@ -4,7 +4,7 @@ import csv
 
 from colorama import init, Fore
 
-from reviews.models import (Category, Comment, Genre, GenreTitle, Review,
+from reviews.models import (Category, Comment, Genre, , Review,
                             Title, User, )
 
 

@@ -3,6 +3,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 
+from api.validator import year_validator
+
 
 ROLE_CHOICES = (
     ('user', 'Пользователь'),
@@ -90,7 +92,7 @@ class Title(models.Model):
         max_length=128,
         verbose_name='название')
     year = models.PositiveSmallIntegerField(
-        validators=[MaxValueValidator(timezone.now().year)],
+        validators=[year_validator],
         verbose_name='год выпуска',
     )
     description = models.TextField(
@@ -99,8 +101,7 @@ class Title(models.Model):
     )
     genre = models.ManyToManyField(
         Genre,
-        through='GenreTitle',
-        related_name='genre',
+        related_name='titles',
         blank=True,
         verbose_name='жанр'
     )
@@ -112,30 +113,12 @@ class Title(models.Model):
         null=True,
         verbose_name='категория'
     )
-    rating = models.IntegerField(
-        null=True,
-        default=None
-    )
 
     class Meta:
         ordering = ('name', )
 
     def __str__(self):
         return self.name
-
-
-class GenreTitle(models.Model):
-    genre = models.ForeignKey(
-        Genre,
-        on_delete=models.CASCADE
-    )
-    title = models.ForeignKey(
-        Title,
-        on_delete=models.CASCADE
-    )
-
-    def __str__(self):
-        return f'{self.title} {self.genre}'
 
 
 class Review(models.Model):

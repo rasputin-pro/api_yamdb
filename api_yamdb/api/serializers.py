@@ -48,14 +48,14 @@ class TokenSerializer(Serializer):
 
 class CategorySerializer(ModelSerializer):
     class Meta:
+        exclude = ('id',)
         model = Category
-        fields = ('name', 'slug',)
 
 
 class GenreSerializer(ModelSerializer):
     class Meta:
+        exclude = ('id',)
         model = Genre
-        fields = ('name', 'slug',)
 
 
 class TitleReadSerializer(ModelSerializer):
