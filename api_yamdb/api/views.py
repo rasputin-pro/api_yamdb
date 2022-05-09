@@ -42,12 +42,13 @@ def token_view(request):
     username = serializer.validated_data['username']
     user = get_object_or_404(User, username=username)
     confirmation_code = serializer.validated_data['confirmation_code']
-    if uuid.uuid5(uuid.NAMESPACE_OID, user.__str__()) == confirmation_code:
-        refresh = RefreshToken.for_user(user)
-        return Response(
+    uuid_code = str(uuid.uuid5(uuid.NAMESPACE_OID, user.__str__()))
+    if uuid_code != confirmation_code:
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    refresh = RefreshToken.for_user(user)
+    return Response(
             {'access': str(refresh.access_token)}, status=HTTP_200_OK
         )
-    return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
 class UserViewSet(ModelViewSet):
