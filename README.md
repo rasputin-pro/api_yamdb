@@ -40,7 +40,7 @@ git clone git@github.com:rasputin-pro/api_yamdb.git
 cd api_yamdb
 ```
 
-Cоздать и активировать виртуальное окружение:
+Создать и активировать виртуальное окружение:
 
 ```commandline
 python3 -m venv env

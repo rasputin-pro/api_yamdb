@@ -1,19 +1,19 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.utils import timezone
 
 from api.validator import year_validator
 
 
-ROLE_CHOICES = (
-    ('user', 'Пользователь'),
-    ('moderator', 'Модератор'),
-    ('admin', 'Администратор'),
-)
-
-
 class User(AbstractUser):
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
+    ROLE_CHOICES = (
+        (USER, 'Пользователь'),
+        (MODERATOR, 'Модератор'),
+        (ADMIN, 'Администратор'),
+    )
     email = models.EmailField(
         max_length=254,
         unique=True,
@@ -26,7 +26,7 @@ class User(AbstractUser):
     role = models.CharField(
         max_length=150,
         choices=ROLE_CHOICES,
-        default='user',
+        default=USER,
         verbose_name='Роль пользователя'
     )
 
@@ -40,15 +40,15 @@ class User(AbstractUser):
 
     @property
     def is_user(self):
-        return self.role == 'user'
+        return self.role == self.USER
 
     @property
     def is_moderator(self):
-        return self.role == 'moderator'
+        return self.role == self.MODERATOR
 
     @property
     def is_admin(self):
-        return self.role == 'admin'
+        return self.role == self.ADMIN
 
 
 class Category (models.Model):
@@ -108,7 +108,7 @@ class Title(models.Model):
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
-        related_name='category',
+        related_name='titles',
         blank=True,
         null=True,
         verbose_name='категория'

@@ -2,6 +2,7 @@ import os
 
 from .conftest import MANAGE_PATH, project_dir_content, root_dir_content
 
+
 # проверяем, что в папки приложения api не находятся модели
 api_path = os.path.join(MANAGE_PATH, 'api')
 if 'api' in project_dir_content and os.path.isdir(api_path):

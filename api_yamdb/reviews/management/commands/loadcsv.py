@@ -1,10 +1,10 @@
-from django.core.management.base import BaseCommand
-from django.shortcuts import get_object_or_404
 import csv
 
-from colorama import init, Fore
+from colorama import Fore, init
+from django.core.management.base import BaseCommand
+from django.shortcuts import get_object_or_404
 
-from reviews.models import (Category, Comment, Genre, , Review,
+from reviews.models import (Category, Comment, Genre, Review,
                             Title, User, )
 
 
@@ -145,30 +145,30 @@ class Command(BaseCommand):
         finally:
             csvfile.close()
 
-    def fill_table_genre_title(self):
-        self.stdout.write(
-            '  Applying /api_yamdb/static/data/genre_title.csv', ending='... '
-        )
-        try:
-            with open(
-                'static/data/genre_title.csv', encoding='utf-8'
-            ) as csvfile:
-                reader = csv.reader(csvfile, delimiter=',')
-                for row_num, row in enumerate(reader):
-                    if row_num == 0:
-                        continue
-                    else:
-                        GenreTitle.objects.get_or_create(
-                            id=row[0],
-                            title_id=row[1],
-                            genre_id=row[2]
-                        )
-            return self.stdout.write(Fore.GREEN + 'OK')
-        except Exception as error:
-            self.stderr.write(Fore.RED + 'FALSE')
-            raise Exception(error)
-        finally:
-            csvfile.close()
+    # def fill_table_genre_title(self):
+    #     self.stdout.write(
+    #         '  Applying /api_yamdb/static/data/genre_title.csv', ending='... '
+    #     )
+    #     try:
+    #         with open(
+    #             'static/data/genre_title.csv', encoding='utf-8'
+    #         ) as csvfile:
+    #             reader = csv.reader(csvfile, delimiter=',')
+    #             for row_num, row in enumerate(reader):
+    #                 if row_num == 0:
+    #                     continue
+    #                 else:
+    #                     GenreTitle.objects.get_or_create(
+    #                         id=row[0],
+    #                         title_id=row[1],
+    #                         genre_id=row[2]
+    #                     )
+    #         return self.stdout.write(Fore.GREEN + 'OK')
+    #     except Exception as error:
+    #         self.stderr.write(Fore.RED + 'FALSE')
+    #         raise Exception(error)
+    #     finally:
+    #         csvfile.close()
 
     def fill_table_comments(self):
         self.stdout.write(
@@ -185,7 +185,6 @@ class Command(BaseCommand):
                             continue
                         Comment.objects.get_or_create(
                             id=row[0],
-                            # review_id=get_object_or_404(Review, id=row[1]),
                             review_id=row[1],
                             text=row[2],
                             author=get_object_or_404(User, id=row[3]),
@@ -211,7 +210,7 @@ class Command(BaseCommand):
             self.fill_table_titles()
             self.fill_table_review()
             self.fill_table_genre()
-            self.fill_table_genre_title()
+            # self.fill_table_genre_title()
             self.fill_table_comments()
         except Exception as error:
             self.stderr.write(

@@ -1,24 +1,24 @@
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
+import uuid
+
 from django.db.models import Avg
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import action, api_view
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.filters import TitleFilter
-from api.permissions import (IsAdmin, IsAdminModeratorAuthorOrReadOnly,
-                             ReadOnly)
+from api.permissions import IsAdmin, IsAdminModeratorAuthorOrReadOnly, ReadOnly
 from api.serializers import (CategorySerializer, CommentSerializer,
                              GenreSerializer, ProfileSerializer,
                              ReviewSerializer, SignUpSerializer,
                              TitleReadSerializer, TitleWriteSerializer,
                              TokenSerializer, UserSerializer)
+from api.utils import send_confirmation_code
 from api.viewsets import CreateListViewset
 from reviews.models import Category, Genre, Review, Title, User
 
@@ -29,35 +29,26 @@ def signup_view(request):
     Send confirmation code to user email.
     """
     serializer = SignUpSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        send_confirmation_code(user)
-        return Response(serializer.data, status=HTTP_200_OK)
-    return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-
-
-def send_confirmation_code(user):
-    """Sending confirmation code to user email."""
-    confirmation_code = default_token_generator.make_token(user)
-    subject = 'Код подтверждения'
-    message = (f'username: {user.username}'
-               f'confirmation_code: {confirmation_code}')
-    return send_mail(subject, message, None, (user.email, ))
+    serializer.is_valid(raise_exception=True)
+    user = serializer.save()
+    send_confirmation_code(user)
+    return Response(serializer.data, status=HTTP_200_OK)
 
 
 @api_view(['POST'])
 def token_view(request):
     serializer = TokenSerializer(data=request.data)
-    if serializer.is_valid():
-        username = serializer.data['username']
-        user = get_object_or_404(User, username=username)
-        confirmation_code = serializer.data['confirmation_code']
-        if default_token_generator.check_token(user, confirmation_code):
-            refresh = RefreshToken.for_user(user)
-            return Response(
-                {'access': str(refresh.access_token)}, status=HTTP_200_OK
-            )
-    return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    serializer.is_valid(raise_exception=True)
+    username = serializer.validated_data['username']
+    user = get_object_or_404(User, username=username)
+    confirmation_code = serializer.validated_data['confirmation_code']
+    uuid_code = str(uuid.uuid5(uuid.NAMESPACE_OID, user.__str__()))
+    if uuid_code != confirmation_code:
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    refresh = RefreshToken.for_user(user)
+    return Response(
+            {'access': str(refresh.access_token)}, status=HTTP_200_OK
+        )
 
 
 class UserViewSet(ModelViewSet):
@@ -84,7 +75,6 @@ class UserViewSet(ModelViewSet):
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data, status=HTTP_200_OK)
         return Response(serializer.data, status=HTTP_200_OK)
 
 
@@ -111,7 +101,7 @@ class GenreViewSet(CreateListViewset):
 class TitleViewSet(ModelViewSet):
 
     queryset = Title.objects.all().annotate(
-        Avg("reviews__score")).order_by("name")
+        Avg('reviews__score')).order_by('name')
 
     permission_classes = (IsAdmin | ReadOnly, )
     filterset_class = TitleFilter
@@ -128,7 +118,7 @@ class ReviewViewSet(ModelViewSet):
     permission_classes = (IsAdminModeratorAuthorOrReadOnly, )
 
     def get_queryset(self):
-        title = get_object_or_404(Title, pk=self.kwargs.get("title_id"))
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
         return title.reviews.all()
 
     def perform_create(self, serializer):
@@ -142,7 +132,7 @@ class CommentViewSet(ModelViewSet):
     permission_classes = (IsAdminModeratorAuthorOrReadOnly, )
 
     def get_queryset(self):
-        review = get_object_or_404(Review, pk=self.kwargs.get("review_id"))
+        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
         return review.comments.all()
 
     def perform_create(self, serializer):
