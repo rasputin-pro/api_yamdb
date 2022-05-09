@@ -4,12 +4,8 @@ import api.validator
 from django.conf import settings
 import django.contrib.auth.models
 import django.contrib.auth.validators
-<<<<<<< HEAD
 import django.core.validators
 from django.db import migrations, models
-import django.db.models.deletion
-=======
->>>>>>> master
 import django.utils.timezone
 from django.db import migrations, models
 
