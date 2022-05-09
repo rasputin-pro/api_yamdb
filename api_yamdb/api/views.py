@@ -46,9 +46,7 @@ def token_view(request):
     if uuid_code != confirmation_code:
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
     refresh = RefreshToken.for_user(user)
-    return Response(
-            {'access': str(refresh.access_token)}, status=HTTP_200_OK
-        )
+    return Response({'access': str(refresh.access_token)}, status=HTTP_200_OK)
 
 
 class UserViewSet(ModelViewSet):
