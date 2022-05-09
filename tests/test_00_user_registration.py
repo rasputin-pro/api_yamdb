@@ -2,6 +2,7 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.core import mail
 
+
 User = get_user_model()
 
 
