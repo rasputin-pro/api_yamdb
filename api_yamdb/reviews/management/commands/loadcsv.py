@@ -1,11 +1,11 @@
+import csv
+
+from colorama import Fore, init
 from django.core.management.base import BaseCommand
 from django.shortcuts import get_object_or_404
 
 from reviews.models import (Category, Comment, Genre, GenreTitle, Review,
-                            Title, User, )
-
-import csv
-from colorama import init, Fore
+                            Title, User)
 
 
 init(autoreset=True)
@@ -185,7 +185,6 @@ class Command(BaseCommand):
                             continue
                         Comment.objects.get_or_create(
                             id=row[0],
-                            # review_id=get_object_or_404(Review, id=row[1]),
                             review_id=row[1],
                             text=row[2],
                             author=get_object_or_404(User, id=row[3]),

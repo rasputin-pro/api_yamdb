@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Genre, User, Title, Category
+from .models import Category, Genre, Title, User
 
 
 admin.site.register(Category)
