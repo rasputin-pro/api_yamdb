@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from api.validator import year_validator
+from api.validators import year_validator
 
 
 class User(AbstractUser):
