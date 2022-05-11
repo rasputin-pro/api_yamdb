@@ -32,11 +32,9 @@ ___
 
 Клонировать репозиторий и перейти в него в командной строке:
 
-```
-git clone git@github.com:rasputin-pro/api_yamdb.git
-```
-
 ```commandline
+git clone git@github.com:rasputin-pro/api_yamdb.git
+
 cd api_yamdb
 ```
 
@@ -44,25 +42,17 @@ cd api_yamdb
 
 ```commandline
 python3 -m venv env
-```
 
-```commandline
 source env/bin/activate
-```
 
-```commandline
 python3 -m pip install --upgrade pip
 ```
 
-Установить зависимости из файла requirements.txt:
+Установить зависимости и выполнить миграции:
 
 ```commandline
 pip install -r requirements.txt
-```
 
-Выполнить миграции:
-
-```commandline
 python3 manage.py migrate
 ```
 
@@ -96,7 +86,7 @@ python3 manage.py loadcsv
 ```json
 {
     "username": "user",
-    "confirmation_code": "60e-f8048aa59f92dbbc4286"
+    "confirmation_code": "ae6c10d0-0b13-554c-b976-a05d8a18f0cc"
 }
 ```
 4. При желании пользователь отправляет PATCH-запрос на эндпоинт 
@@ -119,17 +109,17 @@ POST-запрос на специальный эндпоинт `/api/v1/users/` 
 
 
 ## Ресурсы API YaMDb
-- Ресурс auth: аутентификация.
-- Ресурс users: пользователи.
-- Ресурс titles: произведения, к которым пишут отзывы (определённый фильм, 
+- **auth**: аутентификация.
+- **users**: пользователи.
+- **titles**: произведения, к которым пишут отзывы (определённый фильм, 
   книга или песенка).
-- Ресурс categories: категории (типы) произведений («Фильмы», «Книги», 
+- **categories**: категории (типы) произведений («Фильмы», «Книги», 
   «Музыка»).
-- Ресурс genres: жанры произведений. Одно произведение может быть привязано 
+- **genres**: жанры произведений. Одно произведение может быть привязано 
   к нескольким жанрам.
-- Ресурс reviews: отзывы на произведения. Отзыв привязан к определённому 
+- **reviews**: отзывы на произведения. Отзыв привязан к определённому 
   произведению.
-- Ресурс comments: комментарии к отзывам. Комментарий привязан к 
+- **comments**: комментарии к отзывам. Комментарий привязан к 
   определённому отзыву.
 
 
@@ -139,6 +129,6 @@ POST-запрос на специальный эндпоинт `/api/v1/users/` 
 
 
 ## Над проектом работали:
-- Андрей Распутин https://github.com/rasputin-pro
-- Кирилл Сухарев https://github.com/Soliton80
-- Александр Корнеев https://github.com/rtx4090
+- [Андрей Распутин](https://github.com/rasputin-pro)
+- [Кирилл Сухарев](https://github.com/Soliton80)
+- [Александр Корнеев](https://github.com/rtx4090)
