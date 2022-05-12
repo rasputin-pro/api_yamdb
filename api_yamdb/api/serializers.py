@@ -1,6 +1,6 @@
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, EmailField
 from rest_framework.generics import get_object_or_404
 from rest_framework.relations import SlugRelatedField, StringRelatedField
 from rest_framework.serializers import (IntegerField, ModelSerializer,
@@ -9,22 +9,26 @@ from rest_framework.serializers import (IntegerField, ModelSerializer,
 from reviews.models import Category, Comment, Genre, Review, Title, User
 
 
-class SignUpSerializer(ModelSerializer):
+class SignUpSerializer(Serializer):
+    email = EmailField(
+        max_length=254,
+        required=True,
+    )
+    username = CharField(
+        max_length=150,
+        required=True,
+    )
 
     class Meta:
-        model = User
         fields = ('username', 'email')
 
-    @staticmethod
-    def validate_username(value):
-        if value == 'me':
-            raise ValidationError(
-                'Использовать имя "me" в качестве username запрещено.'
-            )
-        return value
+    def validate(self, data):
+        if data['username'] == 'me':
+            raise ValidationError('Нельзя использовать логин me')
+        return data
 
 
-class UserSerializer(SignUpSerializer):
+class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User

@@ -29,6 +29,11 @@ class User(AbstractUser):
         default=USER,
         verbose_name='Роль пользователя'
     )
+    confirmation_code = models.CharField(
+        'Проверочный код',
+        max_length=36,
+        null=True
+    )
 
     class Meta:
         ordering = ('username', )

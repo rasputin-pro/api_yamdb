@@ -1,5 +1,6 @@
 import uuid
 
+from django.db import IntegrityError
 from django.db.models import Avg
 from rest_framework.decorators import action, api_view
 from rest_framework.filters import SearchFilter
@@ -30,7 +31,21 @@ def signup_view(request):
     """
     serializer = SignUpSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    user = serializer.save()
+    email = serializer.validated_data['email']
+    username = serializer.validated_data['username']
+    try:
+        user, create = User.objects.get_or_create(
+            username=username,
+            email=email
+        )
+    except IntegrityError:
+        return Response(
+            'username или email уже существуют!',
+            status=HTTP_400_BAD_REQUEST
+        )
+    confirmation_code = str(uuid.uuid4())
+    user.confirmation_code = confirmation_code
+    user.save()
     send_confirmation_code(user)
     return Response(serializer.data, status=HTTP_200_OK)
 
@@ -42,7 +57,7 @@ def token_view(request):
     username = serializer.validated_data['username']
     user = get_object_or_404(User, username=username)
     confirmation_code = serializer.validated_data['confirmation_code']
-    uuid_code = str(uuid.uuid5(uuid.NAMESPACE_OID, user.__str__()))
+    uuid_code = user.confirmation_code
     if uuid_code != confirmation_code:
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
     refresh = RefreshToken.for_user(user)
