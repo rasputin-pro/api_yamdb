@@ -1,7 +1,9 @@
 # API YaMDB
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray)
+![Python]
+![DjangoREST]
+![Postgres]
+![Nginx]
 ___
 Проект **API YaMDb** собирает **отзывы** (**Review**) пользователей **на 
 произведения** (**Titles**). Произведения делятся на категории: «Книги», 
@@ -28,44 +30,27 @@ ___
 пользователь может оставить только один отзыв.
 
 
-## Как запустить проект:
-Клонировать репозиторий и перейти в него в командной строке:
+## Как запустить проект в docker:
 
-```commandline
-git clone git@github.com:rasputin-pro/api_yamdb.git
+1) Установить docker и docker-compose https://docs.docker.com/get-docker/
 
-cd api_yamdb
-```
+2) скачать на локальную машину папку infra c конфигурационными файлами nginx и env scp -r
 
-Создать и активировать виртуальное окружение:
+3) Запустить из установленной папки docker-compose.yaml командой 
+docker compose up docker-compose.yaml
 
-```commandline
-python3 -m venv env
+4) После того, как запустится docker необходимо выполнить миграции базы командой 
+docker-compose exec web python manage.py migrate
 
-source env/bin/activate
+5) Создать суперпользователя командой
+docker-compose exec web python manage.py createsuperuser
 
-python3 -m pip install --upgrade pip
-```
+6) Собрать статические файлы для nginx командой 
+docker-compose exec web python manage.py collectstatic --no-input
 
-Установить зависимости и выполнить миграции:
-
-```commandline
-pip install -r requirements.txt
-
-python3 manage.py migrate
-```
-
-Запустить проект:
-
-```commandline
-python3 manage.py runserver
-```
-
-Для загрузки тестовых данных из csv-файлов выполнить команду:
-```commandline
+7) Для загрузки тестовых данных из csv-файлов выполнить команды:
+docker exec -it <CONTAINER ID> bash
 python3 manage.py loadcsv
-```
-
 
 
 ## Самостоятельная регистрация пользователей
