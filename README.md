@@ -1,72 +1,95 @@
 # API YaMDB
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray)
+![Python](https://img.shields.io/badge/python-3670A0?logo=python&logoColor=ffdd54)
+![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?logo=django&logoColor=white&color=ff1709&labelColor=gray)
+![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?logo=sqlite&logoColor=white)
 ___
-Проект **API YaMDb** собирает **отзывы** (**Review**) пользователей **на 
-произведения** (**Titles**). Произведения делятся на категории: «Книги», 
-«Фильмы», «Музыка». Список **категорий** (**Category**) может быть расширен 
-администратором (например, можно добавить категорию «изобразительное 
-искусство» или «Ювелирка»).
+Учебный проект на базе фреймворка **Django** и **Django REST**.
 
-Сами произведения в **API YaMDb** не хранятся, здесь нельзя посмотреть фильм 
-или послушать музыку.
-
-В каждой категории есть **произведения**: книги, фильмы или музыка. Например, 
-в категории «Книги» могут быть произведения «Винни-Пух и все-все-все» и 
-«Марсианские хроники», а в категории «Музыка» — песня «Давеча» группы 
-«Насекомые» и вторая сюита Баха.
-
-Произведению может быть присвоен **жанр** (**Genre**) из списка 
-предустановленных (например, «Сказка», «Рок» или «Артхаус»). Новые жанры 
-может создавать только администратор.
-
-Благодарные или возмущённые пользователи оставляют к произведениям текстовые 
-**отзывы** (**Review**) и ставят произведению оценку в диапазоне от одного до 
-десяти (целое число); из пользовательских оценок формируется усреднённая 
-оценка произведения — **рейтинг** (целое число). На одно произведение 
+API YaMDb — собирает отзывы пользователей на произведения. 
+Авторизованные пользователи оставляют к произведениям текстовые 
+отзывы (Review) и ставят оценку в диапазоне от одного до 
+десяти. Из пользовательских оценок формируется рейтинг. На одно произведение 
 пользователь может оставить только один отзыв.
 
+Сами произведения (Title) в проекте не хранятся, здесь нельзя посмотреть 
+фильм или послушать музыку. Но создавая отзыв, 
+пользователь указывает название произведения, назначает ему категорию 
+(Category), и может указать несколько жанров (Genre) из предустановленных. 
+Новые жанры может создавать только администратор.
+
+## Стек технологий:
+- Python 3.7
+- Django 2.2.28
+- Django REST
+- SQLite
 
 ## Как запустить проект:
-
-Клонировать репозиторий и перейти в него в командной строке:
+<details>
+    <summary><b>Клонируйте репозиторий</b></summary>
 
 ```commandline
 git clone git@github.com:rasputin-pro/api_yamdb.git
 
 cd api_yamdb
 ```
+</details>
 
-Создать и активировать виртуальное окружение:
+<details>
+    <summary><b>Создайте и активируйте виртуальное окружение</b></summary>
 
-```commandline
-python3 -m venv env
-
-source env/bin/activate
-
+```shell
+# Linux/MacOS
+python3 -m venv venv
+source venv/bin/activate
 python3 -m pip install --upgrade pip
+
+# Windows
+python -m venv venv
+source venv/scripts/activate
+python -m pip install --upgrade pip
 ```
+> В проекте используется **Python** версии **3.7**
+</details>
 
-Установить зависимости и выполнить миграции:
+<details>
+    <summary>
+        <b>Установите зависимости из файла <code>requirements.txt</code></b>
+    </summary>
 
-```commandline
+```shell
 pip install -r requirements.txt
-
-python3 manage.py migrate
 ```
+</details>
 
-Запустить проект:
+<details>
+    <summary><b>Примените миграции</b></summary>
+
+```shell
+# Linux/MacOS
+python3 api_yamdb/manage.py migrate
+
+# Windows
+python api_yamdb/manage.py migrate
+```
+</details>
+
+<details>
+    <summary><b>Запустите программу</b></summary>
+
+```shell
+python3 api_yamdb/manage.py runserver
+```
+</details>
+
+<details>
+    <summary><b>Для загрузки тестовых данных из csv-файлов выполните команду
+    </b></summary>
 
 ```commandline
-python3 manage.py runserver
+python3 api_yamdb/manage.py loadcsv
 ```
-
-Для загрузки тестовых данных из csv-файлов выполнить команду:
-```commandline
-python3 manage.py loadcsv
-```
-
+</details>
 
 
 ## Самостоятельная регистрация пользователей
@@ -124,8 +147,9 @@ POST-запрос на специальный эндпоинт `/api/v1/users/` 
 
 
 ## Документация
-После запуска проекта - по адресу: `http://127.0.0.1:8000/redoc/` доступна 
-документация.
+После запуска программы документация будет доступна по адресу:
+
+[http://127.0.0.1:8000/redoc/](http://127.0.0.1:8000/redoc/)
 
 
 ## Над проектом работали:
